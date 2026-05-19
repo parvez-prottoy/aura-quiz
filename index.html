@@ -5565,9 +5565,10 @@
                         email: email,
 
                         source: 'prelaunch_quiz',
-
-                        quiz_answers: JSON.stringify(answers),
-
+                        email: email,
+                          quiz_answers: JSON.stringify(answers),
+                          top_category: trackQueue[0] || '',
+                          quiz_source: 'Aura Quiz',
                         top_category:
                             Object.keys(answers).length > 0
                                 ? (trackQueue[0] || 'unknown')
