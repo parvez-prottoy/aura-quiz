@@ -5549,7 +5549,34 @@
                 return;
             }
             // In production: POST to GHL webhook or your backend here
-            // fetch('/api/save-quiz-email', { method:'POST', body: JSON.stringify({ email, answers }) });
+            fetch(
+                'https://services.leadconnectorhq.com/hooks/O4SUswDJvQ0B356hPftz/webhook-trigger/3229cb2a-c319-43d5-a734-26d2a50fccc8',
+
+                {
+
+                    method: 'POST',
+
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+
+                    body: JSON.stringify({
+
+                        email: email,
+
+                        source: 'prelaunch_quiz',
+
+                        quiz_answers: answers,
+
+                        top_category:
+                            Object.keys(answers).length > 0
+                                ? (trackQueue[0] || 'unknown')
+                                : 'unknown'
+
+                    })
+
+                }).catch(console.error);
+           
             document.getElementById('emailForm').style.display = 'none';
             document.getElementById('emailSuccess').style.display = 'flex';
         }
