@@ -5556,7 +5556,7 @@
                 },
                 body: JSON.stringify({
                     email: email,
-                   quiz_answers: JSON.stringify(answers),
+                   quiz_answers: Object.entries(answers).map(([k,v]) => `${k}: ${JSON.stringify(v)}`).join('\n'),
                     top_category: trackQueue.length
                         ? trackQueue[0]
                         : "general",
