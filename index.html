@@ -5549,35 +5549,23 @@
                 return;
             }
             // In production: POST to GHL webhook or your backend here
-            fetch(
-                'https://services.leadconnectorhq.com/hooks/O4SUswDJvQ0B356hPftz/webhook-trigger/3229cb2a-c319-43d5-a734-26d2a50fccc8',
+            fetch("https://services.leadconnectorhq.com/hooks/O4SUswDJvQ0B356hPftz/webhook-trigger/3229cb2a-c319-43d5-a734-26d2a50fccc8", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    email: email,
 
-                {
+                    quiz_answers: JSON.stringify(answers),
 
-                    method: 'POST',
+                    top_category: trackQueue.length
+                        ? trackQueue[0]
+                        : "general",
 
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-
-                    body: JSON.stringify({
-
-                        email: email,
-
-                        source: 'prelaunch_quiz',
-                        email: email,
-                          quiz_answers: JSON.stringify(answers),
-                          top_category: trackQueue[0] || '',
-                          quiz_source: 'Aura Quiz',
-                        top_category:
-                            Object.keys(answers).length > 0
-                                ? (trackQueue[0] || 'unknown')
-                                : 'unknown'
-
-                    })
-
-                }).catch(console.error);
-           
+                    quiz_source: "Aura Quiz"
+                })
+            })
             document.getElementById('emailForm').style.display = 'none';
             document.getElementById('emailSuccess').style.display = 'flex';
         }
