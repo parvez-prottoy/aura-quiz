@@ -5495,8 +5495,14 @@
         // ══════════════════════════════════════════════════════════
         // RESULTS ENGINE
         // ══════════════════════════════════════════════════════════
-
+        let ghlRecommendations = [];
         function renderRecCard(p, key, type, isFirst, showLifestyle) {
+            ghlRecommendations.push({
+            name: p.name,
+            category: p.category,
+            description: p.desc,
+            type: type
+          });
             const badgeLabel = type === 'primary' && isFirst ? 'Your Top Match' : type === 'primary' ? 'Recommended' : 'Also Consider';
             const badgeClass = type === 'primary' ? 'primary-badge' : 'secondary-badge';
             const cardClass = type === 'primary' && isFirst ? 'rec-card primary' : 'rec-card ' + type;
@@ -5549,21 +5555,54 @@
                 return;
             }
             // In production: POST to GHL webhook or your backend here
-            fetch("https://services.leadconnectorhq.com/hooks/O4SUswDJvQ0B356hPftz/webhook-trigger/ee21f279-abd8-400f-99e3-9937443002db", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    email: email,
-                   quiz_answers: Object.entries(answers).map(([k,v]) => `${k}: ${JSON.stringify(v)}`).join('\n'),
-                    top_category: trackQueue.length
-                        ? trackQueue[0]
-                        : "general",
+            fetch('https://services.leadconnectorhq.com/hooks/O4SUswDJvQ0B356hPftz/webhook-trigger/ee21f279-abd8-400f-99e3-9937443002db', {
 
-                    quiz_source: "Aura Quiz"
-                })
-            })
+        method: 'POST',
+
+        headers: {
+          'Content-Type': 'application/json'
+        },
+
+        body: JSON.stringify({
+
+          email: email,
+
+          quiz_answers: Object.entries(answers)
+            .map(([k, v]) => `${k}: ${JSON.stringify(v)}`)
+            .join('\n'),
+
+          top_category:
+            trackQueue[0] || 'general',
+
+          quiz_source:
+            'Aura Quiz',
+
+          recommended_products:
+            ghlRecommendations
+              .map(p => `${p.name} (${p.category})`)
+              .join('\n')
+
+        })
+
+      })
+
+        .then(() => {
+
+          // Clear recommendations for next user
+          ghlRecommendations = [];
+
+          document.getElementById('emailForm').style.display = 'none';
+
+          document.getElementById('emailSuccess').style.display = 'flex';
+
+        })
+
+        .catch((error) => {
+
+          console.error('Webhook Error:', error);
+
+        });
+            
             document.getElementById('emailForm').style.display = 'none';
             document.getElementById('emailSuccess').style.display = 'flex';
         }
